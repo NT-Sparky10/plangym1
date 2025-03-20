@@ -134,7 +134,6 @@
     </div>
 
     <script>
-        // If user is already logged in, redirect to plan.html
         if (localStorage.getItem("loggedInUser")) {
             window.location.href = "plan.html";
         }
@@ -150,11 +149,9 @@
             if (users[username] && users[username] === password) {
                 alert("Login successful!");
                 errorMessage.textContent = "";
-
-                // Store the logged-in user
                 localStorage.setItem("loggedInUser", username);
 
-                window.location.href = "plan.html"; // Redirect to plan page
+                window.location.href = "plan.html";
             } else {
                 errorMessage.textContent = "Invalid username or password";
             }
@@ -185,8 +182,6 @@
 
             alert("Registration successful! You can now log in.");
             errorMessage.textContent = "";
-
-            // Switch to login form
             toggleForms();
         });
 
