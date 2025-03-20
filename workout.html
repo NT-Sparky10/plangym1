@@ -96,8 +96,7 @@ h3 {
         let countdown;
         let isRunning = false;
         let workoutStopped = false;
-        let remainingTime = 0; // Store remaining seconds when stopped
-
+        let remainingTime = 0; 
         function loadExercises() {
             exercises = JSON.parse(localStorage.getItem("savedExercises")) || [];
             let list = document.getElementById("exerciseList");
@@ -110,14 +109,14 @@ h3 {
         }
 
         function startWorkout() {
-            if (isRunning || exercises.length === 0) return; // Prevent multiple starts
+            if (isRunning || exercises.length === 0) return; 
             isRunning = true;
             workoutStopped = false; 
 
             if (remainingTime > 0) {
-                countdownTimer(remainingTime); // Resume from the stopped time
+                countdownTimer(remainingTime); 
             } else {
-                runExercise(); // Start new exercise if not resuming
+                runExercise();
             }
         }
 
@@ -134,21 +133,21 @@ h3 {
         }
 
         function countdownTimer(seconds) {
-            remainingTime = seconds; // Store initial duration
+            remainingTime = seconds; 
             document.getElementById("timer").textContent = seconds + "s";
 
             countdown = setInterval(() => {
-                if (workoutStopped) { // Stop countdown if stopped
+                if (workoutStopped) {
                     clearInterval(countdown);
                     return;
                 }
                 seconds--;
-                remainingTime = seconds; // Update remaining time
+                remainingTime = seconds;
                 document.getElementById("timer").textContent = seconds + "s";
 
                 if (seconds <= 0) {
                     clearInterval(countdown);
-                    remainingTime = 0; // Reset remaining time
+                    remainingTime = 0; 
                     currentIndex++;
                     removeFirstExercise();
                     runExercise();
