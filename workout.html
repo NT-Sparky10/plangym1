@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout</title>
+    <style>
+        body {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    color: white;
+    padding: 20px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.container {
+    max-width: 500px;
+    background: rgba(0, 0, 0, 0.85);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 2;
+}
+
+h2 {
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+#timer {
+    font-size: 50px;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+.btn {
+    width: 150px;
+    padding: 15px;
+    margin: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.start-btn { background: #ff4d4d; color: white; }
+.stop-btn { background: #e60000; color: white; }
+
+.btn:hover { opacity: 0.85; transform: scale(1.1); }
+
+.exercise-list {
+    list-style: none;
+    padding: 0;
+    font-size: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.exercise-list li {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    margin: 8px 0;
+    border-radius: 8px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    <div class="container">
+        <h2>Workout Session</h2>
+        <h3 id="currentExercise">Press Start to Begin</h3>
+        <h2 id="timer">00:00</h2>
+        <button class="btn start-btn" onclick="startWorkout()">Start</button>
+        <button class="btn stop-btn" onclick="stopWorkout()">Stop</button>
+
+        <h3>Remaining Exercises</h3>
+        <ul id="exerciseList" class="exercise-list"></ul>
+    </div>
+    <script>
+        let exercises = [];
+        let currentIndex = 0;
+        let countdown;
+        let isRunning = false;
+        let workoutStopped = false;
+        let remainingTime = 0; // Store remaining seconds when stopped
+
+        function loadExercises() {
+            exercises = JSON.parse(localStorage.getItem("savedExercises")) || [];
+            let list = document.getElementById("exerciseList");
+            list.innerHTML = "";
+            exercises.forEach(exercise => {
+                let li = document.createElement("li");
+                li.textContent = exercise;
+                list.appendChild(li);
+            });
+        }
+
+        function startWorkout() {
+            if (isRunning || exercises.length === 0) return; // Prevent multiple starts
+            isRunning = true;
+            workoutStopped = false; 
+
+            if (remainingTime > 0) {
+                countdownTimer(remainingTime); // Resume from the stopped time
+            } else {
+                runExercise(); // Start new exercise if not resuming
+            }
+        }
+
+        function runExercise() {
+            if (currentIndex >= exercises.length) {
+                document.getElementById("currentExercise").textContent = "Workout Completed!";
+                isRunning = false;
+                return;
+            }
+            let [exerciseName, duration] = exercises[currentIndex].split(" - ");
+            duration = parseInt(duration) || 30;
+            document.getElementById("currentExercise").textContent = exerciseName;
+            countdownTimer(duration);
+        }
+
+        function countdownTimer(seconds) {
+            remainingTime = seconds; // Store initial duration
+            document.getElementById("timer").textContent = seconds + "s";
+
+            countdown = setInterval(() => {
+                if (workoutStopped) { // Stop countdown if stopped
+                    clearInterval(countdown);
+                    return;
+                }
+                seconds--;
+                remainingTime = seconds; // Update remaining time
+                document.getElementById("timer").textContent = seconds + "s";
+
+                if (seconds <= 0) {
+                    clearInterval(countdown);
+                    remainingTime = 0; // Reset remaining time
+                    currentIndex++;
+                    removeFirstExercise();
+                    runExercise();
+                }
+            }, 1000);
+        }
+
+        function removeFirstExercise() {
+            let list = document.getElementById("exerciseList");
+            if (list.firstChild) list.removeChild(list.firstChild);
+        }
+
+        function stopWorkout() {
+            clearInterval(countdown);
+            isRunning = false;
+            workoutStopped = true;
+            document.getElementById("currentExercise").textContent = "Workout Paused!";
+        }
+
+        loadExercises();
+
+    </script>
+</body>
+</html>

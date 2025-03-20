@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanGym Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js for bar graph -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            background: linear-gradient(to bottom, rgba(20, 20, 20, 0.9), rgba(0, 0, 0, 0.95)),
+                        url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80') center/cover no-repeat fixed;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+        .container, .calendar-container {
+            max-width: 500px;
+            margin: 20px auto;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 2;
+        }
+        h2, h3 {
+            font-weight: 600;
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .btn {
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .complete-btn { background: #ff4d4d; color: white; }
+        .reset-btn { background: #e60000; color: white; }
+        .btn:hover { opacity: 0.8; transform: scale(1.05); }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-size: 16px;
+        }
+        th {
+            background: rgba(255, 77, 77, 0.9);
+        }
+        td.completed {
+            background: rgba(255, 77, 77, 0.8);
+            font-weight: bold;
+        }
+        .graph-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>PlanGym Tracker</h2>
+
+        <h3>Select a Date & Workout Time:</h3>
+        <input type="date" id="workoutDate">
+        <input type="number" id="workoutTime" placeholder="Time (mins)" min="1">
+        <button class="btn complete-btn" onclick="markWorkout()">Complete Workout</button>
+    </div>
+
+    <div class="calendar-container">
+        <h3>Workout Calendar:</h3>
+        <table id="calendar"></table>
+        <button class="btn reset-btn" onclick="resetProgress()">Reset Progress</button>
+    </div>
+
+    <div class="graph-container">
+        <h3>Workout Progress</h3>
+        <canvas id="workoutChart"></canvas>
+    </div>
+
+    <script>
+        let completedWorkouts = JSON.parse(localStorage.getItem("completedWorkouts")) || {};
+
+        function formatDate(isoDate) {
+            let date = new Date(isoDate);
+            let day = String(date.getDate()).padStart(2, '0');
+            let month = String(date.getMonth() + 1).padStart(2, '0');
+            let year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function markWorkout() {
+            let date = document.getElementById("workoutDate").value;
+            let time = parseInt(document.getElementById("workoutTime").value) || 0;
+
+            if (!date || time <= 0) {
+                alert("Please select a date and valid workout time.");
+                return;
+            }
+
+            let formattedDate = formatDate(date);
+            let caloriesBurned = time * 8; // Assuming 8 calories burned per minute
+
+            if (!completedWorkouts[formattedDate]) {
+                completedWorkouts[formattedDate] = { time: 0, calories: 0 };
+            }
+
+            completedWorkouts[formattedDate].time += time;
+            completedWorkouts[formattedDate].calories += caloriesBurned;
+
+            localStorage.setItem("completedWorkouts", JSON.stringify(completedWorkouts));
+            loadCalendar();
+            updateGraph();
+        }
+
+        function loadCalendar() {
+            let calendar = document.getElementById("calendar");
+            calendar.innerHTML = "<tr><th>Date</th><th>Total Time (mins)</th><th>Calories Burned</th></tr>";
+
+            Object.keys(completedWorkouts).sort().forEach(date => {
+                let row = document.createElement("tr");
+                let dateCell = document.createElement("td");
+                let timeCell = document.createElement("td");
+                let calorieCell = document.createElement("td");
+
+                dateCell.textContent = date;
+                timeCell.textContent = completedWorkouts[date].time;
+                calorieCell.textContent = completedWorkouts[date].calories;
+
+                row.classList.add("completed");
+                row.appendChild(dateCell);
+                row.appendChild(timeCell);
+                row.appendChild(calorieCell);
+                calendar.appendChild(row);
+            });
+        }
+
+        function resetProgress() {
+            localStorage.removeItem("completedWorkouts");
+            completedWorkouts = {};
+            loadCalendar();
+            updateGraph();
+        }
+
+        // Bar Graph for Progress
+        let ctx = document.getElementById("workoutChart").getContext("2d");
+        let workoutChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Total Workout Time (mins)',
+                        data: [],
+                        backgroundColor: 'rgba(255, 77, 77, 0.8)',
+                        borderColor: 'rgba(255, 0, 0, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Calories Burned',
+                        data: [],
+                        backgroundColor: 'rgba(77, 166, 255, 0.8)',
+                        borderColor: 'rgba(0, 102, 204, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        function updateGraph() {
+            let labels = Object.keys(completedWorkouts).sort();
+            let timeData = labels.map(date => completedWorkouts[date].time);
+            let calorieData = labels.map(date => completedWorkouts[date].calories);
+
+            workoutChart.data.labels = labels;
+            workoutChart.data.datasets[0].data = timeData;
+            workoutChart.data.datasets[1].data = calorieData;
+            workoutChart.update();
+        }
+
+        loadCalendar();
+        updateGraph();
+
+    </script>
+</body>
+</html>

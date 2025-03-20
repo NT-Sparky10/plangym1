@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanGym</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            /* Fixed background with a proper dark overlay */
+            background: linear-gradient(to bottom, rgba(20, 20, 20, 0.9), rgba(0, 0, 0, 0.95)),
+                        url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80') center/cover no-repeat fixed;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color: white;
+        }
+
+        .h{
+            background-color:rgb(255, 124, 67);
+            padding: 10px;
+            color:white;
+            font-size: medium;
+            border-style: solid;
+            border-radius: 20px;
+            border-color: transparent;
+            font-weight: bold;
+            transition: transform 0.5s ease;
+        }
+        .h:hover{
+            background-color: rgb(255, 87, 34);
+            transform: scale(1.2);
+        }
+        h1{
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        header {
+            background: linear-gradient(135deg, rgb(36, 209, 195), rgb(162, 153, 75));
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                        url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+            margin-bottom: 20px;
+        }
+
+        .hero .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgb(118, 75, 162);
+            color: white;
+            transition: transform 0.5s ease;
+            text-decoration: none;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+        .hero .btn:hover{
+            opacity:0.75;
+            transform:scale(1.2);
+        }
+        #services {
+            text-align: center;
+            padding: 80px 50px;
+        }
+        .service-box {
+            padding: 20px;
+            margin: 10px;
+            display: inline-block;
+            width: 50%;
+            height: 120px;
+            border-radius: 10px;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            color: white;
+            box-shadow: 2px 2px 10px rgba(189, 67, 255, 0.727);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .service-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            z-index: 1;
+        }
+        
+        .service-box h3, .service-box p {
+            position: relative;
+            z-index: 2;
+        }
+        #one {
+            background-image: url('https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');
+        }
+        #two {
+            background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');
+        }
+        #three {
+            background-image: url('https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');
+        }
+        .service-box:hover {
+            transform: scale(1.1);
+            box-shadow: 5px 5px 15px rgba(255, 87, 34, 0.6);
+        }
+        #contact {
+            text-align: center;
+            padding: 50px 20px;
+            background: rgb(34, 34, 34);
+            color: white;
+        }
+
+        form input, form textarea {
+            display: block;
+            width: 80%;
+            margin: 10px auto;
+            padding: 10px;
+        }
+
+        form button {
+            padding: 10px 20px;
+            background: rgb(255, 87, 34);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        form button:hover{
+            transform: scale(1.1);
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+            <h1>PlanGym</h1>
+        <nav>
+            <ul>
+                <li><a href="#home"><button class="h">Home</button></a></li>
+                <li><a href="login.html" target="_self"><button class="h">Login</button></a></li>
+                <li><a href="#contact"><button class="h">Review</button></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <h2>Welcome to PlanGym</h2>
+        <p>Plan Your Gym routine</p>
+        <a href="#services" class="btn">Explore</a>
+    </section>
+
+    <section id="services">
+        <a href="plan.html">
+        <div class="service-box" id="one">
+            <h3>Plan</h3>
+            <p>Create your own routine</p>
+        </div></a>
+        <a href="workout.html">
+        <div class="service-box" id="two">
+            <h3>Workout</h3>
+            <p>Start Your Workout here</p>
+        </div></a>
+        <a href="calender.html">
+        <div class="service-box" id="three">
+            <h3>Calender</h3>
+            <p>Track Your Progress</p>
+        </div>
+        </a>
+    </section>
+
+    <section id="contact">
+        <h2>Review</h2>
+        <form id="reviewForm"> 
+            <input id="n" type="text" placeholder="Your Name" required>
+            <input id="e" type="email" placeholder="Your Email" required>
+            <textarea id="m" placeholder="Your Message" required></textarea>
+            <button id="sub" type="submit">Send</button>
+        </form>
+    </section>
+    
+    <script>
+        document.getElementById("reviewForm").addEventListener("submit", function(event) {
+            event.preventDefault(); 
+            alert("Your response is submitted.");
+            document.getElementById("reviewForm").reset();
+        });
+    </script>
+</body>
+</html>

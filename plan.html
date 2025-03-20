@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Workout Tracker</title>
+    <style>
+        /* Background and page styling */
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+            url('https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: -1;
+        }
+        header {
+            background: linear-gradient(135deg, rgb(29, 216, 201), rgb(162, 75, 75));
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            padding-left: 20px;
+        }
+
+        nav {
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: rgb(255, 87, 34);
+        }
+
+        #logout-btn {
+            background: rgb(255, 87, 34);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            width:200px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        #logout-btn:hover {
+            transform: scale(1.1);
+            background: rgb(200, 50, 20);
+        }
+        .container {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+            url('https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg');
+            max-width: 400px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+
+        select, input, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        select, input {
+            background: rgba(255, 255, 255, 0.9);
+            color: black;
+        }
+
+        button {
+            background: linear-gradient(135deg, #ff4d4d, #ff2e2e);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0px 4px 10px rgba(255, 0, 0, 0.5);
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #ff0000, #cc0000);
+            transform: scale(1.05);
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        li {
+            background: rgba(255, 255, 255, 0.2);
+            margin: 10px auto;
+            padding: 12px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 380px;
+            backdrop-filter: blur(5px);
+            font-size: 18px;
+            box-shadow: 0px 2px 6px rgba(255, 87, 34, 0.3);
+        }
+
+        .remove-btn {
+            background: linear-gradient(135deg, #ff4d4d, #ff2e2e);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            width:100px;
+            font-size: 14px;
+        }
+
+        .remove-btn:hover {
+            background: linear-gradient(135deg, #ff0000, #cc0000);
+            transform: scale(1.1);
+        }
+
+        h3 {
+            margin-top: 20px;
+            text-shadow: 2px 2px 5px rgba(255, 87, 34, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="project.html">Home</a></li>
+                <li><a href="workout.html">Workout</a></li>
+                <li><a href="calender.html">Calendar</a></li>
+            </ul>
+        </nav>
+        <button id="logout-btn" onclick="logout()">Logout</button>
+    </header>
+
+    <script>
+    if (!localStorage.getItem("loggedInUser")) {
+            alert("You must log in to access this page!");
+            window.location.href = "login.html";
+        }
+
+        function logout() {
+            localStorage.removeItem("loggedInUser"); // Remove session data
+            alert("You have been logged out!");
+            window.location.href = "login.html"; // Redirect to login page
+        }
+    </script>
+
+    <div class="container">
+        <h2>Gym Workout Tracker</h2>
+        
+        <label>Select the day:</label>
+        <select id="gym" onchange="updateExercises()">
+            <option>-select-</option>
+            <option value="abs">Abs</option>
+            <option value="shoulder">Shoulder</option>
+            <option value="chest">Chest</option>
+            <option value="arm">Arm</option>
+            <option value="cardio">Cardio</option>
+            <option value="leg">Leg</option>
+        </select>
+
+        <label>Select Exercise:</label>
+        <select id="exercises">
+            <option>Select a day first</option>
+        </select>
+
+        <label>Duration (seconds):</label>
+        <input type="number" id="duration" min="1" placeholder="Enter seconds">
+
+        <button onclick="addExercise()">Add Exercise</button>
+    </div>
+
+    <h3>Selected Exercises:</h3>
+    <ul id="exerciseList"></ul>
+
+    <script>
+        // Redirect to login if not logged in
+        if (!localStorage.getItem("loggedInUser")) {
+            alert("You must log in to access this page!");
+            window.location.href = "login.html";
+        }
+
+        document.addEventListener("DOMContentLoaded", loadExercises);
+
+        function updateExercises() {
+            let gymDay = document.getElementById("gym").value;
+            let exercises = document.getElementById("exercises");
+            exercises.innerHTML = "";
+            let exerciseOptions = {
+                abs: ["Crunches", "Planks", "Leg Raises", "Russian Twists"],
+                shoulder: ["Shoulder Press", "Lateral Raises", "Face Pulls", "Shrugs"],
+                chest: ["Bench Press", "Push-ups", "Chest Fly", "Dips"],
+                arm: ["Bicep Curls", "Tricep Dips", "Hammer Curls", "Skull Crushers"],
+                cardio: ["Running", "Jump Rope", "Cycling", "Burpees"],
+                leg: ["Squats", "Lunges", "Leg Press", "Deadlifts"]
+            };
+            let selectedExercises = exerciseOptions[gymDay] || [];
+            selectedExercises.forEach(exercise => {
+                let option = document.createElement("option");
+                option.textContent = exercise;
+                exercises.appendChild(option);
+            });
+        }
+
+        function addExercise() {
+            let selectedDay = document.getElementById("gym").value;
+            let selectedExercise = document.getElementById("exercises").value;
+            let duration = document.getElementById("duration").value;
+            let list = document.getElementById("exerciseList");
+
+            if (selectedDay === "-select-" || selectedDay === "") {
+                alert("Please select a valid day first!");
+                return;
+            }
+
+            if (!selectedExercise || selectedExercise === "Select a day first" || duration === "" || duration <= 0) {
+                alert("Please select a valid exercise and enter a valid duration!");
+                return;
+            }
+
+            let li = document.createElement("li");
+            li.textContent = `${selectedExercise} - ${duration} sec`;
+
+            let removeBtn = document.createElement("button");
+            removeBtn.textContent = "Remove";
+            removeBtn.classList.add("remove-btn");
+            removeBtn.onclick = function () {
+                list.removeChild(li);
+                saveExercises();
+            };
+
+            li.appendChild(removeBtn);
+            list.appendChild(li);
+
+            saveExercises();
+        }
+
+
+        function saveExercises() {
+            let listItems = document.querySelectorAll("#exerciseList li");
+            let exercises = Array.from(listItems).map(item => item.firstChild.textContent.trim());
+            localStorage.setItem("savedExercises", JSON.stringify(exercises));
+        }
+
+        function loadExercises() {
+            let savedExercises = JSON.parse(localStorage.getItem("savedExercises")) || [];
+            savedExercises.forEach(exercise => {
+                let li = document.createElement("li");
+                li.textContent = exercise;
+
+                let removeBtn = document.createElement("button");
+                removeBtn.textContent = "Remove";
+                removeBtn.classList.add("remove-btn");
+                removeBtn.onclick = function () {
+                    li.remove();
+                    saveExercises();
+                };
+
+                li.appendChild(removeBtn);
+                document.getElementById("exerciseList").appendChild(li);
+            });
+        }
+    </script>
+
+</body>
+</html>

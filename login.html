@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Registration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #47a1d5, #a24b4b);
+            flex-direction: column;
+        }
+        #top {
+            background-color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            color: black;
+            text-decoration: none;
+            margin-bottom: 15px;
+            display: inline-block;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        #top:hover {
+            background-color: #ddd;
+            transform: scale(1.05);
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #667eea;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #764ba2;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .toggle-link {
+            margin-top: 10px;
+            color: #667eea;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="project.html" id="top">Home</a>
+
+    <div class="container" id="formContainer">
+        <h2 id="formTitle">Login</h2>
+        
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="loginUsername">Username</label>
+                <input type="text" id="loginUsername" required>
+            </div>
+            <div class="input-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" required>
+            </div>
+            <button type="submit" class="btn">Login</button>
+            <p id="loginErrorMessage" class="error"></p>
+        </form>
+
+        <form id="registerForm" style="display: none;">
+            <div class="input-group">
+                <label for="registerUsername">Username</label>
+                <input type="text" id="registerUsername" required>
+            </div>
+            <div class="input-group">
+                <label for="registerEmail">Email</label>
+                <input type="email" id="registerEmail" required>
+            </div>
+            <div class="input-group">
+                <label for="registerPassword">Password</label>
+                <input type="password" id="registerPassword" required>
+            </div>
+            <div class="input-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" required>
+            </div>
+            <button type="submit" class="btn">Register</button>
+            <p id="registerErrorMessage" class="error"></p>
+        </form>
+        
+        <p class="toggle-link" id="toggleForm">Don't have an account? Register</p>
+    </div>
+
+    <script>
+        // If user is already logged in, redirect to plan.html
+        if (localStorage.getItem("loggedInUser")) {
+            window.location.href = "plan.html";
+        }
+
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const username = document.getElementById("loginUsername").value;
+            const password = document.getElementById("loginPassword").value;
+            const errorMessage = document.getElementById("loginErrorMessage");
+
+            let users = JSON.parse(localStorage.getItem("users")) || {};
+
+            if (users[username] && users[username] === password) {
+                alert("Login successful!");
+                errorMessage.textContent = "";
+
+                // Store the logged-in user
+                localStorage.setItem("loggedInUser", username);
+
+                window.location.href = "plan.html"; // Redirect to plan page
+            } else {
+                errorMessage.textContent = "Invalid username or password";
+            }
+        });
+
+        document.getElementById("registerForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const username = document.getElementById("registerUsername").value;
+            const email = document.getElementById("registerEmail").value;
+            const password = document.getElementById("registerPassword").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const errorMessage = document.getElementById("registerErrorMessage");
+
+            let users = JSON.parse(localStorage.getItem("users")) || {};
+
+            if (users[username]) {
+                errorMessage.textContent = "Username already exists!";
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                errorMessage.textContent = "Passwords do not match!";
+                return;
+            }
+
+            users[username] = password;
+            localStorage.setItem("users", JSON.stringify(users));
+
+            alert("Registration successful! You can now log in.");
+            errorMessage.textContent = "";
+
+            // Switch to login form
+            toggleForms();
+        });
+
+        document.getElementById("toggleForm").addEventListener("click", toggleForms);
+
+        function toggleForms() {
+            const loginForm = document.getElementById("loginForm");
+            const registerForm = document.getElementById("registerForm");
+            const formTitle = document.getElementById("formTitle");
+            const toggleText = document.getElementById("toggleForm");
+
+            if (loginForm.style.display === "none") {
+                loginForm.style.display = "block";
+                registerForm.style.display = "none";
+                formTitle.textContent = "Login";
+                toggleText.textContent = "Don't have an account? Register";
+            } else {
+                loginForm.style.display = "none";
+                registerForm.style.display = "block";
+                formTitle.textContent = "Register";
+                toggleText.textContent = "Already have an account? Login";
+            }
+        }
+    </script>
+</body>
+</html>
