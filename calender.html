@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PlanGym Tracker</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js for bar graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
@@ -161,7 +161,6 @@
             updateGraph();
         }
 
-        // Bar Graph for Progress
         let ctx = document.getElementById("workoutChart").getContext("2d");
         let workoutChart = new Chart(ctx, {
             type: 'bar',
